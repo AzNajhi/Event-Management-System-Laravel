@@ -48,13 +48,9 @@ function updateStaffInputs () {
             })
             .then(response => response.json())
             .then(responseData => {
-                let message = responseData['message'];
-                let view = responseData['view'];
-                let nameList = responseData['nameList'];
-
-                document.querySelector('.staff-input-label').innerHTML = message;
-                document.querySelector('.staff-input').innerHTML = view;
-                unusedName = [...nameList]
+                document.querySelector('.staff-input-label').innerHTML = responseData['message'];
+                document.querySelector('.staff-input').innerHTML = responseData['view'];
+                unusedName = [...responseData['nameList']]
             })
             .catch((error) => console.error('Error:', error));
         };
@@ -152,9 +148,6 @@ function sendForm(event) {
     let data = {
         'day' : document.querySelector(".form-control[name='day']").value,
         'session' : document.querySelector(".form-control[name='session']").value,
-        'participant' : document.querySelector(".form-control[name='participant']").value,
-        'ratioStaff' : document.querySelector(".form-control[name='ratio-staff']").value,
-        'ratioParticipant' : document.querySelector(".form-control[name='ratio-participant']").value,
         'staffInputs' : Array.from(document.querySelectorAll(".staff-id"), input => input.value)
     };
 
@@ -166,9 +159,9 @@ function sendForm(event) {
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
-    .then(data => {
-        document.querySelector(".result-schedule").innerHTML = data["table"];
+    .then(response => response.text())
+    .then(view => {
+        document.querySelector(".result-schedule").innerHTML = view;
     })
     .catch((error) => console.error('Error:', error));
 }
