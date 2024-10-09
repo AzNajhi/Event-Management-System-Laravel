@@ -1,4 +1,4 @@
-@props(['title' => 'Default Title', 'csspath' => 'css/default.css'])
+@props(['title' => 'Default Title', 'csspath' => 'css/default.css', 'jspath' => 'js/script.js'])
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
         <link rel="stylesheet" href="{{ asset($csspath) }}">
+        <script src="{{ asset($jspath) }}"></script>
         <title>AzNajhi's {{ $title }}</title>
     </head>
     <body>
@@ -21,6 +22,5 @@
             <!-- CONTENT HERE -->
             {{ $slot }}
         </div>
-        <script src="{{ asset('js\script.js') }}"></script>
     </body>
 </html>

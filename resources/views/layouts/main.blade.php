@@ -1,4 +1,4 @@
-<x-template :title="$title" :csspath="$csspath">
+<x-template :title="$title" :csspath="$csspath" :jspath="$jspath">
     <div class="app-form">
         <div class="card">
             <div class="form-group">
@@ -44,7 +44,7 @@
 
     <div class="bottom-buttons mt-4 mb-4">
         <button class="btn btn-primary process-button" type="button" disabled="true">Process Table</button>
-        <button class="btn btn-primary" type="button" data-key="access-granted" onclick="navigateToDatabase(this)">Manage Staff</button>
+        <a href="{{ asset('/staff-management') }}" class="btn btn-primary" type="button">Manage Staff</a>
     </div>
 
     <div class="result mb-4">

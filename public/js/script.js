@@ -32,7 +32,7 @@ function updateStaffInputs () {
             let message = `<span class="warning-message">Please ensure all inputs are filled out correctly!</span>`
             document.querySelector('.staff-input-label').innerHTML = message;
             document.querySelector('.staff-input').innerHTML = "";
-        
+
         } else {
             let requestData = {
                 'totalStaff' : totalStaff
@@ -145,7 +145,7 @@ function checkStaffInputs (input, event) {
 function sendForm(event) {
     event.preventDefault();
     
-    let data = {
+    let requestData = {
         'day' : document.querySelector(".form-control[name='day']").value,
         'session' : document.querySelector(".form-control[name='session']").value,
         'staffInputs' : Array.from(document.querySelectorAll(".staff-id"), input => input.value)
@@ -157,139 +157,13 @@ function sendForm(event) {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(requestData)
     })
     .then(response => response.text())
     .then(view => {
         document.querySelector(".result-schedule").innerHTML = view;
     })
     .catch((error) => console.error('Error:', error));
-}
-
-function navigateToDatabase(button) {
-    const key = button.getAttribute('data-key');
-
-    fetch('request-access-db', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        },
-        body: JSON.stringify({ 'key': key })
-    })
-    .then(response => response.text())
-    .then(html => {
-        document.documentElement.innerHTML = html;
-        window.history.pushState({}, '', '/staff-management.php');
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-function addStaff () {
-    let listContainer = document.querySelector('.app-form table tbody');
-    let listNumber = document.querySelectorAll('.app-form table tr').length;
-    listContainer.innerHTML += `
-    <tr>
-        <td>
-            <input class='form-control staff-input' type='text' value='' data-id='' data-index='${listNumber + 1}'>
-        </td>
-        <td>
-            <div class='button-group'>
-                <button class='btn btn-secondary save-button' data-index="${listNumber + 1}" type="button" onclick="saveStaff(this)"><i class="fa-regular fa-floppy-disk"></i></button>
-            </div>
-        </td>
-    </tr>
-    `;
-}
-
-function deleteStaff (button) {
-    let staffIndex = button.getAttribute('data-index');
-    let staffID = document.querySelector(`input[data-index='${staffIndex}']`).getAttribute('data-id');
-
-    if (staffID != "") {
-        let data = {
-            'id' : staffID
-        };
-
-        fetch('request-delete-db', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.text())
-        .then(html => document.documentElement.innerHTML = html)
-        .catch(error => console.error('Error:', error));
-    }
-}
-
-function editStaff (button) {
-    let staffIndex = button.getAttribute('data-index');
-    let parent = button.parentElement;
-    let input = document.querySelector(`input[data-index='${staffIndex}']`);
-    input.disabled = false;
-    parent.innerHTML = `<button class="btn btn-secondary save-button" data-index="${staffIndex}" type="button" onclick="saveStaff(this)"><i class="fa-regular fa-floppy-disk"></i></button>`
-}
-
-function saveStaff (button) {
-    let staffIndex = button.getAttribute('data-index');
-    let staffID = document.querySelector(`input[data-index='${staffIndex}']`).getAttribute('data-id');
-    let staffName = document.querySelector(`input[data-index='${staffIndex}']`).value;
-
-    if (staffID != "" && staffName != "") {
-        let data = {
-            'id' : staffID,
-            'name' : staffName,
-        };
-
-        fetch('request-edit-db', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.text())
-        .then(html => {
-            document.documentElement.innerHTML = html;
-        })
-        .catch((error) => console.error('Error:', error));
-
-    } else if (staffID == "" && staffName != "" ){
-        let data = {
-            'name' : staffName
-        };
-
-        fetch('request-add-db', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.text())
-        .then(html => {
-            console.log("Test: ", html);
-            document.documentElement.innerHTML = html;
-        })
-        .catch((error) => console.error('Error:', error));
-
-    } else {
-        alert("Please make sure to enter the staff name before you save!")
-        return
-
-    }
-    let parent = button.parentElement;
-    let input = document.querySelector(`input[data-index='${staffIndex}']`);
-    input.disabled = true;
-    parent.innerHTML = `
-        <button class="btn btn-secondary edit-button" data-index="${staffIndex}" type="button" onclick="editStaff(this)"><i class="fa-regular fa-pen-to-square"></i></button>
-        <button class="btn btn-danger delete-button" data-index="${staffIndex}" type="button" onclick="deleteStaff(this)"><i class="fas fa-trash"></i></button>
-    `
 }
 
 updateStaffInputs ();

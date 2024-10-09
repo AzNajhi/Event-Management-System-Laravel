@@ -1,3 +1,4 @@
+<!-- View for Output Table -->
 <table>
     <thead>
         <tr>

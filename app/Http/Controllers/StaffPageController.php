@@ -7,19 +7,16 @@ use App\Models\Staff;
 
 class StaffPageController extends Controller
 {
-    public function unlockPage (Request $request)
+    public function initializeData (Request $request)
     {
-        $key = $request->input('key');
+        $staffs = Staff::orderBy('fullname', 'asc')->get();
 
-        if ($key === 'access-granted') {
-            $staffs = Staff::orderBy('fullname', 'asc')->get();
-
-            return view('layouts/staff', [
-                'title' => 'Staff Management',
-                'csspath' => 'css/staff.css',
-                'staffs' => $staffs
-            ]);
-        }
+        return view('layouts/staff', [
+            'title' => 'Staff Management',
+            'csspath' => 'css/staff.css',
+            'jspath' => 'js/staff.js',
+            'staffs' => $staffs
+        ]);
     }
 
     public function addStaff (Request $request)
@@ -30,12 +27,7 @@ class StaffPageController extends Controller
         $newStaff->save();
 
         $staffs = Staff::orderBy('fullname', 'asc')->get();
-
-        return view('layouts/staff', [
-            'title' => 'Staff Management',
-            'csspath' => 'css/staff.css',
-            'staffs' => $staffs
-        ]);
+        return view('components/staffList', compact('staffs'));
     }
 
     public function editStaff (Request $request)
@@ -47,12 +39,7 @@ class StaffPageController extends Controller
         $staff->save();
 
         $staffs = Staff::orderBy('fullname', 'asc')->get();
-
-        return view('layouts/staff', [
-            'title' => 'Staff Management',
-            'csspath' => 'css/staff.css',
-            'staffs' => $staffs
-        ]);
+        return view('components/staffList', compact('staffs'));
     }
 
     public function deleteStaff (Request $request) 
@@ -62,11 +49,6 @@ class StaffPageController extends Controller
         $staff->delete();
 
         $staffs = Staff::orderBy('fullname', 'asc')->get();
-
-        return view('layouts/staff', [
-            'title' => 'Staff Management',
-            'csspath' => 'css/staff.css',
-            'staffs' => $staffs
-        ]);
+        return view('components/staffList', compact('staffs'));
     }
 }
